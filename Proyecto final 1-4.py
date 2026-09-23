@@ -134,12 +134,18 @@ while True:
         hay_productos=lista_simple()
         if not hay_productos:
             continue
+
         while True:
             producto_buscado=input("Escriba el nombre del producto que desea vender: ").lower()
 
+            producto_existe=False
             for producto in productos:
                 if producto["Nombre"]==producto_buscado:
                     producto_encontrado=buscar_existencia(producto_buscado)
+                    producto_existe=True
+            if not producto_existe:
+                producto_existe=buscar_existencia(producto_buscado)
+                continue
 
 
             try:
