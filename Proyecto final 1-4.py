@@ -1,3 +1,5 @@
+import datetime
+
 def consultar_inventario():
     with open("producto_archivo.txt","r") as archivo:
         leer = archivo.readlines()
@@ -40,7 +42,7 @@ def buscar_existencia(producto_buscado):
             producto_existe=True
             return producto_encontrado
     if not producto_existe:
-        print("Este producto no existe.")
+        print("Este producto no existe.\n")
         return producto_existe
 
 while True:
@@ -62,9 +64,8 @@ while True:
                 cantidad = int(datos[1].replace("Cantidad de productos: ", ""))
                 precio = float(datos[2].replace("Precio del producto unitario: $", ""))
                 productos.append({"Nombre": nombre.title(), "Cantidad": cantidad, "Precio": precio})
-    print("\n",productos)
     
-    print("-----------------------")
+    print("\n-----------------------")
     print(" - Menú principal - \n")
     print("1.- Agregar producto.")
     print("2.- Consultar inventario.")
@@ -157,7 +158,8 @@ while True:
                 if cantidad_a_vender <=producto_encontrado["Cantidad"]:
                     producto_encontrado["Cantidad"]-=cantidad_a_vender
                     total_vendido=producto_encontrado["Precio"]*cantidad_a_vender
-                    print(f"Venta realizada!\nSu total sería: ${total_vendido:.2f}")
+                    print("Venta realizada!")
+                    print(f"|Unidad| {producto_encontrado["Nombre"]} - ${producto_encontrado["Precio"]:.2f}\n|Cantidad| x{cantidad_a_vender}\n--------------------------\n|Total| ${total_vendido:.2f}")
                     break
                 else:
                     print("No hay suficiente stock de este producto. Revise inventario para ver el stock.")
@@ -167,8 +169,29 @@ while True:
                 print("Respuesta no válida.")
 
     elif opcion == "4":
-        continue
-        #
+        print("-----Buscar Productos-----")
+        hay_productos=lista_simple()
+        if not hay_productos:
+            continue
+
+        while True:
+            producto_buscado=input("Escriba el nombre de un producto para ver más información: ").lower()
+
+            producto_existe=False
+            for producto in productos:
+                if producto["Nombre"]==producto_buscado:
+                    producto_encontrado=buscar_existencia(producto_buscado)
+                    producto_existe=True
+            if not producto_existe:
+                producto_existe=buscar_existencia(producto_buscado)
+                continue
+
+            precio_total=producto_encontrado["Cantidad"]*producto_encontrado["Precio"]
+
+            print("\nInformación del producto:")
+            print(f"|Nombre| {producto_encontrado["Nombre"]}\n|Cantidad| {producto_encontrado["Cantidad"]}\n|Precio unitario| {producto_encontrado["Precio"]}\n|Precio total| {precio_total:.2f}")
+            break
+        
     elif opcion == "5":
         continue
         #
