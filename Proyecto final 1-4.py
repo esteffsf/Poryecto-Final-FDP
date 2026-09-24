@@ -1,4 +1,5 @@
 import datetime
+import time
 
 while True:
     fecha_ingresada = input("Ingrese la fecha (DD/MM/YYYY): ")
@@ -35,7 +36,7 @@ def lista_simple():
     hay_productos=False
     for producto in productos:
         if producto["Cantidad"] >=1:
-            print(f"-{producto["nombre"].title()}")
+            print(f"-{producto["Nombre"].title()}")
             hay_productos=True
     if not hay_productos:
         print("No hay productos aún.")
@@ -71,6 +72,31 @@ def registrar_venta(producto,cantidad,precio,total,fecha):
     with open("ventas.txt", "w") as archivo:
         for linea in lineas:
             archivo.write(linea)
+
+def stock_bajo(productos):
+    print(" ----- Stock Bajo -----")
+    hay_stock_bajo = False
+
+    for producto in productos:
+        if producto["Cantidad"] <= 5 and producto["Cantidad"] > 0:
+            print(f"{producto['Nombre'].title()} tiene stock bajo, unidades: {producto['Cantidad']}")
+            hay_stock_bajo = True
+
+    if not hay_stock_bajo:
+        print("No hay productos con stock bajo.")
+
+venta_dia = []
+
+def ventas_dia(produtos):
+    print(" ----- Ventas del día -----")
+    if len(venta_dia) == 0:
+        print("No se han hecho ventas el día de hoy.")
+        return
+    contador = 1
+    for venta in ventas_dia:
+        print(f"{contador}.- {venta['Nombre'.title()]}: {venta['Cantidad']}")
+        contador += 1
+    print("")
 
 while True:
     #Abre los archivos y los crea si no existen
@@ -155,7 +181,7 @@ while True:
 
         #Si no existe, lo agrega a la lista
         if producto_encontrado == False:
-            productos.append({"Nombre": nuevo_producto.strip(), "Cantidad": cantidad_productos, "Precio": nuevo_precio})
+            productos.append({"Nombre": nuevo_producto, "Cantidad": cantidad_productos, "Precio": nuevo_precio})
 
         reescribir_archivo()
 
@@ -172,7 +198,7 @@ while True:
             continue
 
         while True:
-            producto_buscado=input("Escriba el nombre del producto que desea vender: ").lower().strip()
+            producto_buscado=input("Escriba el nombre del producto que desea vender: ").strip()
 
             producto_existe=False
             for producto in productos:
@@ -192,6 +218,7 @@ while True:
 
                 if cantidad_a_vender <=producto_encontrado["Cantidad"]:
                     producto_encontrado["Cantidad"]-=cantidad_a_vender
+                    venta_dia.append({'Nombre': producto_encontrado['Nombre'], 'Cantidad': cantidad_a_vender})
                     total_vendido=producto_encontrado["Precio"]*cantidad_a_vender
                     print("Venta realizada!")
                     print(f"|Unidad| {producto_encontrado["Nombre"]} - ${producto_encontrado["Precio"]:.2f}\n|Cantidad| x{cantidad_a_vender}\n--------------------------\n|Total| ${total_vendido:.2f}")
@@ -230,16 +257,21 @@ while True:
             break
         
     elif opcion == "5":
-        continue
-        #
+        stock_bajo(productos)
+        
     elif opcion == "6":
-        continue
-        #
+        ventas_dia(venta_dia)
+        
     elif opcion == "7":
         continue
         #
     elif opcion == "8":
-        continue
-        #
+        print("Saliendo, no apague el dispositivo.")
+        for i in range(3):
+            print("...")
+            time.sleep(1)
+        print("Guardado correctamente, apagando.")
+        break
+        
     else:
         print("Opción no válida. Escriba solo un número disponible")
