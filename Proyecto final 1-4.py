@@ -1,5 +1,14 @@
 import datetime
 
+while True:
+    fecha_ingresada = input("Ingrese la fecha (DD/MM/YYYY): ")
+    try:
+        fecha_inicial = datetime.datetime.strptime(fecha_ingresada, "%d/%m/%Y")
+        fecha = fecha_inicial.strftime("%d/%m/%Y")
+        break
+    except ValueError:
+        print("Fecha no válida. Intente de nuevo.")
+
 def consultar_inventario():
     with open("producto_archivo.txt","r") as archivo:
         leer = archivo.readlines()
@@ -45,8 +54,26 @@ def buscar_existencia(producto_buscado):
         print("Este producto no existe.\n")
         return producto_existe
 
+def registrar_venta(producto,cantidad,precio,total,fecha):
+    with open("ventas.txt", "r") as archivo:
+        lineas=archivo.readlines()
+
+    fecha_linea= f"Fecha: {fecha}\n"
+    nueva_venta=f"-Producto: {producto}, Precio por unidad: ${precio:.2f}, Cantidad: {cantidad}, Total: ${total:.2f}\n"
+    if fecha_linea in lineas:
+        donde_esta=lineas.index(fecha_linea)
+        lineas.insert(donde_esta + 1, nueva_venta)
+    else:
+        with open("ventas.txt","a") as archivo:
+            archivo.write("\n" + fecha_linea)
+            archivo.write(nueva_venta)
+
+    with open("ventas.txt", "w") as archivo:
+        for linea in lineas:
+            archivo.write(linea)
+
 while True:
-    #Abre el archivo y lo crea si no existe
+    #Abre los archivos y los crea si no existen
     try:
         producto_archivo = open("producto_archivo.txt", "r")
         producto_archivo.close
@@ -54,7 +81,15 @@ while True:
         producto_archivo = open("producto_archivo.txt", "w")
         producto_archivo.close()
 
-    #Mete el contenido del archivo a una lista de diccionarios
+    try:
+        archivo=open("ventas.txt","r")
+        archivo.close()
+    except FileNotFoundError:
+        with open("ventas.txt","w") as archivo:
+            archivo.write("-----Registro de Ventas-----")
+        
+
+    #Mete el contenido del inventario a una lista de diccionarios
     productos=[]
     with open("producto_archivo.txt", "r") as archivo:
         for linea in archivo:
@@ -160,6 +195,8 @@ while True:
                     total_vendido=producto_encontrado["Precio"]*cantidad_a_vender
                     print("Venta realizada!")
                     print(f"|Unidad| {producto_encontrado["Nombre"]} - ${producto_encontrado["Precio"]:.2f}\n|Cantidad| x{cantidad_a_vender}\n--------------------------\n|Total| ${total_vendido:.2f}")
+                    reescribir_archivo()
+                    registrar_venta(producto_encontrado["Nombre"], cantidad_a_vender, producto_encontrado["Precio"],total_vendido,fecha)
                     break
                 else:
                     print("No hay suficiente stock de este producto. Revise inventario para ver el stock.")
