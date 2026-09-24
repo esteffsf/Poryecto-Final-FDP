@@ -34,7 +34,7 @@ def lista_simple():
     print("Productos disponibles:")
     hay_productos=False
     for producto in productos:
-        if producto["cantidad"] >=1:
+        if producto["Cantidad"] >=1:
             print(f"-{producto["nombre"].title()}")
             hay_productos=True
     if not hay_productos:
@@ -155,7 +155,7 @@ while True:
 
         #Si no existe, lo agrega a la lista
         if producto_encontrado == False:
-            productos.append({"Nombre": nuevo_producto, "Cantidad": cantidad_productos, "Precio": nuevo_precio})
+            productos.append({"Nombre": nuevo_producto.strip(), "Cantidad": cantidad_productos, "Precio": nuevo_precio})
 
         reescribir_archivo()
 
@@ -172,7 +172,7 @@ while True:
             continue
 
         while True:
-            producto_buscado=input("Escriba el nombre del producto que desea vender: ").lower()
+            producto_buscado=input("Escriba el nombre del producto que desea vender: ").lower().strip()
 
             producto_existe=False
             for producto in productos:
