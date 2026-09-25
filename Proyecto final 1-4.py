@@ -26,9 +26,9 @@ def reescribir_archivo():
     with open("producto_archivo.txt", "w") as archivo:
         for producto in productos:
             if producto["Cantidad"]>0:
-                archivo.write(f"|Nombre del producto: {producto["Nombre"].title()} |")
-                archivo.write(f"|Cantidad de productos: {producto["Cantidad"]}|")
-                archivo.write(f"|Precio del producto unitario: ${producto["Precio"]:.2f}|\n")
+                archivo.write(f'|Nombre del producto: {producto["Nombre"].title()} |')
+                archivo.write(f'|Cantidad de productos: {producto["Cantidad"]}|')
+                archivo.write(f'|Precio del producto unitario: ${producto["Precio"]:.2f}|\n')
 
 def lista_simple():
     print("--------------------------")
@@ -93,16 +93,24 @@ def ventas_dia(produtos):
         print("No se han hecho ventas el día de hoy.")
         return
     contador = 1
-    for venta in ventas_dia:
+    for venta in venta_dia:
         print(f"{contador}.- {venta['Nombre'.title()]}: {venta['Cantidad']}")
         contador += 1
     print("")
+
+def total_ventas_dia(ventas):
+    total = 0
+
+    for venta in ventas:
+        total += venta["Precio"] * venta["Cantidad"]
+
+    return total
 
 while True:
     #Abre los archivos y los crea si no existen
     try:
         producto_archivo = open("producto_archivo.txt", "r")
-        producto_archivo.close
+        producto_archivo.close()
     except FileNotFoundError:
         producto_archivo = open("producto_archivo.txt", "w")
         producto_archivo.close()
@@ -218,7 +226,7 @@ while True:
 
                 if cantidad_a_vender <=producto_encontrado["Cantidad"]:
                     producto_encontrado["Cantidad"]-=cantidad_a_vender
-                    venta_dia.append({'Nombre': producto_encontrado['Nombre'], 'Cantidad': cantidad_a_vender})
+                    venta_dia.append({'Nombre': producto_encontrado['Nombre'], 'Cantidad': cantidad_a_vender, 'Precio': producto_encontrado['Precio'], 'Total': producto_encontrado['Precio'] * cantidad_a_vender})
                     total_vendido=producto_encontrado["Precio"]*cantidad_a_vender
                     print("Venta realizada!")
                     print(f"|Unidad| {producto_encontrado["Nombre"]} - ${producto_encontrado["Precio"]:.2f}\n|Cantidad| x{cantidad_a_vender}\n--------------------------\n|Total| ${total_vendido:.2f}")
@@ -263,8 +271,9 @@ while True:
         ventas_dia(venta_dia)
         
     elif opcion == "7":
-        continue
-        #
+        total = total_ventas_dia(venta_dia)
+        print("----- Total vendido del día -----")
+        print(f"Total vendido: ${total:.2f}")
     elif opcion == "8":
         print("Saliendo, no apague el dispositivo.")
         for i in range(3):
