@@ -64,7 +64,7 @@ def registrar_venta(producto,cantidad,precio,total,fecha):
         
         #Comprobar si ya estaba escrita la fecha que se puso al correr el programa.
         fecha_linea= f"Fecha: {fecha}\n"
-        nueva_venta=f"-Producto: {producto}, Precio por unidad: ${precio:.2f}, Cantidad: {cantidad}, Total: ${total:.2f}"
+        nueva_venta=f"-Producto: {producto}, Precio por unidad: ${precio:.2f}, Cantidad: {cantidad}, Total: ${total:.2f}\n"
         #Si esta, encuentra la linea exacta donde esta y añade la venta abajo de la fecha
         if fecha_linea in lineas:
             donde_esta=lineas.index(fecha_linea)
